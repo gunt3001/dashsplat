@@ -6,16 +6,27 @@ from collections import defaultdict
 import subprocess, argparse
 
 B0 = np.array([[0, 0, 1], [-1, 0, 0], [0, -1, 0.0]])
-YAW = [0, 180, 64, -64, 148, -148]
-PITCH = [-3, -32, -5, -5, -5, -5]
+# Starting guesses (priors) per camera, in CAMS order: front, back, left/right pillar,
+# left/right repeater. Defaults are the author's Model 3; override in car.json
+# ("yaw_deg", "pitch_deg", "mounts_m", "focal_px"). Mount positions are metres from the
+# centre of the rear axle at ground level: x forward, y left, z up.
+YAW = car("yaw_deg", [0, 180, 64, -64, 148, -148])
+PITCH = car("pitch_deg", [-3, -32, -5, -5, -5, -5])
 POS = [
-    [1.94, 0, 1.31],
-    [-0.89, 0, 0.82],
-    [1.12, 0.85, 1.15],
-    [1.12, -0.85, 1.15],
-    [2.53, 0.88, 0.79],
-    [2.53, -0.88, 0.79],
+    car("mounts_m", {}).get(c, d)
+    for c, d in zip(
+        CAMS,
+        [
+            [1.94, 0, 1.31],
+            [-0.89, 0, 0.82],
+            [1.12, 0.85, 1.15],
+            [1.12, -0.85, 1.15],
+            [2.53, 0.88, 0.79],
+            [2.53, -0.88, 0.79],
+        ],
+    )
 ]
+FOCAL = car("focal_px", [3639, 460, 810, 810, 820, 820])
 B = Rot.from_euler("ZY", np.column_stack((YAW, -np.array(PITCH))), degrees=True).as_matrix() @ B0
 
 
@@ -47,7 +58,7 @@ class Scene:
             )
         )
         self.dtfr = np.zeros((len(fr), 6))
-        f = np.array([3639, 460, 810, 810, 820, 820])
+        f = np.array(FOCAL, float)
         self.prior = np.column_stack(
             (f, f, self.sizes * 0.5, np.zeros((6, 7)), POS, np.zeros((6, 2)))
         )

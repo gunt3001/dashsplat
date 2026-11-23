@@ -264,7 +264,7 @@ def main():
     lines += [
         f"The rear tyre corridor photometric road-plane sweep accepted {g['road_pairs']}/{g['road_total']} frame pairs. Its median height in the preliminary frame was {g['road']:.3f} m; 16th–84th percentiles {fmt(g['road_range'], 3)} m. Grades and suspension motion limit absolute height. Yaw comes from robust mid-arc travel direction; lateral zero is the mean of the two left/right mount midpoints. No mirror rotations or pair-specific coordinate equality were imposed.",
         "",
-        f"The no-slip rear-axle fit alone puts the back lens at x={g['rear_x_unconstrained']:.3f} m, outside the car’s −0.977 m rear extent. The delivered common longitudinal origin is the nearest feasible one under that hard body-envelope bound. The {100 * abs(g['x_axle_raw'] - g['x_axle_used']):.1f} cm change applies to all six; it is not a measurement of the rear lens recess. Trust relative baselines more than absolute x. The lateral residual at the unconstrained solution is {g['lateral_rms'] * 1000:.1f} mm per increment (already informed by the no-slip prior).",
+        f"The no-slip rear-axle fit alone puts the back lens at x={g['rear_x_unconstrained']:.3f} m; the car’s rear extent bound is −{car('rear_overhang_m', 0.977):.3f} m. The delivered common longitudinal origin is the nearest feasible one under that hard body-envelope bound. The {100 * abs(g['x_axle_raw'] - g['x_axle_used']):.1f} cm change applies to all six; it is not a measurement of the rear lens recess. Trust relative baselines more than absolute x. The lateral residual at the unconstrained solution is {g['lateral_rms'] * 1000:.1f} mm per increment (already informed by the no-slip prior).",
         "",
     ]
     pairs = []

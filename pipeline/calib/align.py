@@ -42,7 +42,9 @@ def align(s):
     pp = p @ axes
     cy = np.mean(pp[2:, 1])
     raw = pp[1, 0] - fit[0]
-    cx = min(fit[0], pp[1, 0] + 0.977)
+    # car.json "rear_overhang_m": rear axle centre to the rearmost point of the bumper (the back
+    # camera cannot sit behind it), measured horizontally on the car.
+    cx = min(fit[0], pp[1, 0] + car("rear_overhang_m", 0.977))
     centre = np.array([cx, cy, height]) @ axes.T
     return (
         axes,
